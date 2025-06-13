@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura {{ factura.numero_secuencial }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 20px;
+        }
+        
+        .logo-section {
+            flex: 1;
+        }
+        
+        .logo {
+            max-width: 150px;
+            max-height: 80px;
+        }
+        
+        .company-info {
+            flex: 2;
+            text-align: center;
+        }
+        
+        .company-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0066cc;
+            margin-bottom: 5px;
+        }
+        
+        .company-details {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .invoice-info {
+            flex: 1;
+            text-align: right;
+        }
+        
+        .invoice-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0066cc;
+            margin-bottom: 10px;
+        }
+        
+        .invoice-number {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .invoice-date {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .client-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+        }
+        
+        .client-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #0066cc;
+            margin-bottom: 10px;
+        }
+        
+        .client-info {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .client-details {
+            flex: 1;
+        }
+        
+        .payment-info {
+            flex: 1;
+            text-align: right;
+        }
+        
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+        
+        .details-table th {
+            background-color: #0066cc;
+            color: white;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        
+        .details-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #ddd;
+            font-size: 11px;
+        }
+        
+        .details-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .text-right {
+            text-align: right;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .totals-section {
+            float: right;
+            width: 300px;
+            margin-top: 20px;
+        }
+        
+        .totals-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .totals-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .totals-table .label {
+            font-weight: bold;
+            text-align: right;
+            background-color: #f8f9fa;
+        }
+        
+        .totals-table .amount {
+            text-align: right;
+            font-weight: bold;
+        }
+        
+        .total-final {
+            background-color: #0066cc !important;
+            color: white !important;
+            font-size: 14px;
+        }
+        
+        .footer {
+            clear: both;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+        }
+        
+        .sri-info {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            font-size: 10px;
+        }
+        
+        .sri-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-section">
+            {% if emisor.logo_path %}
+            <img src="{{ emisor.logo_path }}" alt="Logo" class="logo">
+            {% endif %}
+        </div>
+        
+        <div class="company-info">
+            <div class="company-name">{{ emisor.razon_social }}</div>
+            <div class="company-details">
+                RUC: {{ emisor.ruc }}<br>
+                {% if emisor.direccion %}{{ emisor.direccion }}<br>{% endif %}
+                {% if emisor.telefono %}Tel: {{ emisor.telefono }}{% endif %}
+                {% if emisor.correo %} | Email: {{ emisor.correo }}{% endif %}
+            </div>
+        </div>
+        
+        <div class="invoice-info">
+            <div class="invoice-title">FACTURA</div>
+            <div class="invoice-number">{{ factura.numero_secuencial }}</div>
+            <div class="invoice-date">{{ factura.fecha_emision.strftime('%d/%m/%Y') }}</div>
+        </div>
+    </div>
+    
+    <div class="client-section">
+        <div class="client-title">DATOS DEL CLIENTE</div>
+        <div class="client-info">
+            <div class="client-details">
+                <strong>{{ cliente.nombre }}</strong><br>
+                Cédula/RUC: {{ cliente.cedula_ruc }}<br>
+                {% if cliente.direccion %}{{ cliente.direccion }}<br>{% endif %}
+                {% if cliente.telefono %}Tel: {{ cliente.telefono }}<br>{% endif %}
+                {% if cliente.correo %}Email: {{ cliente.correo }}{% endif %}
+            </div>
+            <div class="payment-info">
+                <strong>Forma de Pago:</strong><br>
+                {{ factura.forma_pago }}
+            </div>
+        </div>
+    </div>
+    
+    <table class="details-table">
+        <thead>
+            <tr>
+                <th style="width: 10%;">Cant.</th>
+                <th style="width: 45%;">Descripción</th>
+                <th style="width: 15%;">Precio Unit.</th>
+                <th style="width: 15%;">Descuento</th>
+                <th style="width: 15%;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for detalle in factura.detalles %}
+            <tr>
+                <td class="text-center">{{ detalle.cantidad }}</td>
+                <td>{{ detalle.producto_servicio.nombre }}</td>
+                <td class="text-right">${{ "%.2f"|format(detalle.precio_unitario) }}</td>
+                <td class="text-right">${{ "%.2f"|format(detalle.descuento) }}</td>
+                <td class="text-right">${{ "%.2f"|format(detalle.precio_total) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="totals-section">
+        <table class="totals-table">
+            <tr>
+                <td class="label">Subtotal:</td>
+                <td class="amount">${{ "%.2f"|format(factura.subtotal) }}</td>
+            </tr>
+            <tr>
+                <td class="label">IVA (12%):</td>
+                <td class="amount">${{ "%.2f"|format(factura.iva) }}</td>
+            </tr>
+            <tr class="total-final">
+                <td class="label">TOTAL:</td>
+                <td class="amount">${{ "%.2f"|format(factura.total) }}</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="sri-info">
+        <div class="sri-title">INFORMACIÓN TRIBUTARIA</div>
+        Esta factura cumple con los requisitos establecidos por el Servicio de Rentas Internas (SRI) del Ecuador.<br>
+        IVA incluido según la normativa vigente (12%).<br>
+        Documento válido para efectos tributarios.
+    </div>
+    
+    <div class="footer">
+        <p>Factura generada electrónicamente - {{ factura.fecha_emision.strftime('%d/%m/%Y %H:%M') }}</p>
+        <p>{{ emisor.razon_social }} - RUC: {{ emisor.ruc }}</p>
+    </div>
+</body>
+</html>
+
